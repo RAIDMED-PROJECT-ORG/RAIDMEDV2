@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Slf4j
 public class AuthenticationIntegrationTest extends AbstractIntegrationTest {
-    /*
     @Autowired
     private UserRepository userRepository;
 
@@ -150,6 +149,6 @@ public class AuthenticationIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.accessToken").doesNotExist())
                 .andExpect(content().string("Bad credentials"))
                 .andExpect(cookie().doesNotExist("refreshToken"));
-    }*/
+    }
 
 }
