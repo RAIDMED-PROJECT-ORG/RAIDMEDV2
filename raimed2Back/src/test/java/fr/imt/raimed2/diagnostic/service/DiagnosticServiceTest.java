@@ -277,7 +277,7 @@ class DiagnosticServiceTest {
         });
     }
 
-/*    @Test
+    @Test
     void getDiagnosticClosedQuestion() {
         VirtualPatient virtualPatient = new VirtualPatient();
 
@@ -298,27 +298,35 @@ class DiagnosticServiceTest {
         List<Question> result = diagnosticService.getDiagnosticClosedQuestion(diagnosticId);
 
         assertEquals(questions, result);
-    }*/
+    }
 
-//    @Test
-//    void getDiagnosticOpenedQuestion() {
-//        Long diagnosticId = 1L;
-//        Diagnostic diagnostic = new Diagnostic();
-//        VirtualPatient virtualPatient = new VirtualPatient();
-//        diagnostic.setVirtualPatient(virtualPatient);
-//        List<Question> questions = List.of(new Question());
-//        List<ActionOpenedQuestion> openedQuestions = List.of(new ActionOpenedQuestion());
-//        List<ActionOpenedQuestion> askedOpenedQuestions = List.of();
-//        when(diagnosticRepository.findById(diagnosticId)).thenReturn(Optional.of(diagnostic));
-//        when(questionService.getAllQuestion(QuestionType.OPENED)).thenReturn(questions);
-//        when(actionService.getAllOpenedQuestionOfVirtualPatient(virtualPatient.getId())).thenReturn(openedQuestions);
-//        when(actionService.getAllOpenedQuestionOfDiagnosticEvents(eventRepository.findAllByDiagnosticId(diagnosticId))).thenReturn(askedOpenedQuestions);
-//
-//        List<Question> result = diagnosticService.getDiagnosticOpenedQuestion(diagnosticId);
-//
-//        assertEquals(questions, result);
-//    }
-//
+    @Test
+    void getDiagnosticOpenedQuestion() {
+        Long diagnosticId = 1L;
+        Diagnostic diagnostic = new Diagnostic();
+        VirtualPatient virtualPatient = new VirtualPatient();
+        diagnostic.setVirtualPatient(virtualPatient);
+
+        Question question = new Question();
+        question.setId(1L);
+
+        ActionOpenedQuestion openedQuestion = new ActionOpenedQuestion();
+        openedQuestion.setQuestion(question);
+
+        List<Question> questions = new ArrayList<>(List.of(question));
+        List<ActionOpenedQuestion> openedQuestions = List.of(openedQuestion);
+        List<ActionOpenedQuestion> askedOpenedQuestions = List.of();
+
+        when(diagnosticRepository.findById(diagnosticId)).thenReturn(Optional.of(diagnostic));
+        when(questionService.getAllQuestion(QuestionType.OPENED)).thenReturn(questions);
+        when(actionService.getAllOpenedQuestionOfVirtualPatient(virtualPatient.getId())).thenReturn(openedQuestions);
+        when(actionService.getAllOpenedQuestionOfDiagnosticEvents(eventRepository.findAllByDiagnosticId(diagnosticId))).thenReturn(askedOpenedQuestions);
+
+        List<Question> result = diagnosticService.getDiagnosticOpenedQuestion(diagnosticId);
+
+        assertEquals(questions, result);
+    }
+
     @Test
     void startDiagnosticOfVirtualPatient() {
         User user = new User();
@@ -337,27 +345,28 @@ class DiagnosticServiceTest {
         verify(diagnosticRepository, times(1)).save(any(Diagnostic.class));
     }
 
-//    @Test
-//    void addEventToDiagnostic() {
-//        CreateEventDto createEventDto = new CreateEventDto();
-//        createEventDto.setActionId(UUID.randomUUID());
-//
-//        VirtualPatient virtualPatient = new VirtualPatient();
-//
-//        Action action = new Action() {};
-//        virtualPatient.setActions(Set.of(action));
-//
-//        Long diagnosticId = 1L;
-//        Diagnostic diagnostic = new Diagnostic();
-//        diagnostic.setVirtualPatient(virtualPatient);
-//
-//        when(diagnosticRepository.findById(diagnosticId)).thenReturn(Optional.of(diagnostic));
-//        when(eventRepository.save(any(Event.class))).thenReturn(new Event());
-//        when(eventRepository.findAllByDiagnosticId(diagnosticId)).thenReturn(List.of(new Event()));
-//
-//        List<Event> result = diagnosticService.addEventToDiagnostic(diagnosticId, createEventDto);
-//
-//        assertNotNull(result);
-//        verify(eventRepository, times(1)).save(any(Event.class));
-//    }
+    @Test
+    void addEventToDiagnostic() {
+        CreateEventDto createEventDto = new CreateEventDto();
+        createEventDto.setActionId(UUID.randomUUID());
+
+        VirtualPatient virtualPatient = new VirtualPatient();
+
+        Action action = new Action() {};
+        action.setId(createEventDto.getActionId());
+        virtualPatient.setActions(Set.of(action));
+
+        Long diagnosticId = 1L;
+        Diagnostic diagnostic = new Diagnostic();
+        diagnostic.setVirtualPatient(virtualPatient);
+
+        when(diagnosticRepository.findById(diagnosticId)).thenReturn(Optional.of(diagnostic));
+        when(eventRepository.save(any(Event.class))).thenReturn(new Event());
+        when(eventRepository.findAllByDiagnosticId(diagnosticId)).thenReturn(List.of(new Event()));
+
+        List<Event> result = diagnosticService.addEventToDiagnostic(diagnosticId, createEventDto);
+
+        assertNotNull(result);
+        verify(eventRepository, times(1)).save(any(Event.class));
+    }
 }
