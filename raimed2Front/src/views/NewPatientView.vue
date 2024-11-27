@@ -22,8 +22,11 @@ import CharacteristicModal from '@/components/modal/characteristicModal/Characte
 import { initializeNewPatient, type NewPatient } from '@/models/new-patient/newPatient.model';
 import type { Characteristics } from '@/models/new-patient/characteristics.model';
 import WarningModal from '@/components/modal/warningModal/WarningModal.vue';
+import type { Question } from '@/models/question/question.model';
+import QuestionModal from '@/components/modal/questionModal/QuestionModal.vue';
 
 const isCharacteristicModalOpen = ref(false);
+const isQuestionModalOpen = ref(false);
 const isWarningModalOpen = ref(false);
 const errors = ref<string[]>([]);
 const newPatient = ref<NewPatient>(initializeNewPatient());
@@ -52,12 +55,20 @@ function switchWarningModalVisibility() {
 
 function onCharacteristicValidation(data: Characteristics) {
   newPatient.value.characteristic = data;
-  console.log('nouveau Patient :', newPatient);
   switchCharacteristicModalVisibility();
 }
 
 function switchCharacteristicModalVisibility() {
   isCharacteristicModalOpen.value = !isCharacteristicModalOpen.value;
+}
+
+function onQuestionValidation(data: Question[]) {
+  newPatient.value.questions = data;
+  switchQuestionModalVisibility();
+}
+
+function switchQuestionModalVisibility() {
+  isQuestionModalOpen.value = !isQuestionModalOpen.value;
 }
 </script>
 
@@ -72,6 +83,11 @@ function switchCharacteristicModalVisibility() {
       v-if="isCharacteristicModalOpen"
       :onValidation="onCharacteristicValidation"
       :onBack="switchCharacteristicModalVisibility"
+    />
+    <QuestionModal
+      v-if="isQuestionModalOpen"
+      :onValidation="onQuestionValidation"
+      :onBack="switchQuestionModalVisibility"
     />
     <div class="w-full h-full flex flex-col justify-center items-center">
       <h1 class="text-2xl text-primary font-bold">Nouveau patient</h1>
@@ -88,7 +104,7 @@ function switchCharacteristicModalVisibility() {
             :icon="faPerson"
             :onClick="switchCharacteristicModalVisibility"
           />
-          <ActionButton label="Écouter" :color="Color.Blue" :icon="faEarListen" />
+          <ActionButton label="Écouter" :color="Color.Blue" :icon="faEarListen" :onClick="switchQuestionModalVisibility"/>
           <ActionButton label="Question" :color="Color.Blue" :icon="faPersonCircleQuestion" />
           <ActionButton
             :label="getTypeActionDisplayName(TypeAction.SPECIFY_SYMPTOM)"

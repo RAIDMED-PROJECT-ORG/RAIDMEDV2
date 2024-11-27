@@ -5,9 +5,10 @@ import GenericModal from '@/components/modal/genericModal/GenericModal.vue';
 import { faCakeCandles, faMarsAndVenus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import IconLabel from '@/components/iconLabel/IconLabel.vue';
 import DropdownButton from '@/components/dropdownButton/DropdownButton.vue';
+import type { Characteristics } from '@/models/new-patient/characteristics.model';
 
 const props = defineProps<{
-  onValidation: (data: { sex: string; age: number; diagnostic: string }) => void;
+  onValidation: (data: Characteristics) => void;
   onBack: () => void;
 }>();
 
