@@ -148,21 +148,21 @@ public class DiagnosticService {
         // Retrieve all closed questions
         List<Question> questions = questionService.getAllQuestion(QuestionType.CLOSED);
 
-        System.out.println(questions);
         // Retrieve all closed questions of the virtual patient
         List<ActionClosedQuestion> closedQuestions = actionService.getAllClosedQuestionOfVirtualPatient(
             diagnostic.getVirtualPatient().getId()
         );
+
         // Retrieve all asked closed questions of the diagnostic
         List<ActionClosedQuestion> askedCloseQuestions = actionService.getAllClosedQuestionOfDiagnosticEvents(
             eventRepository.findAllByDiagnosticId(diagnosticId)
         );
         // Keep only the questions that are already defined in the virtual patient and not already asked in the diagnostic
         questions.removeIf(
-            question -> (
-                closedQuestions.stream().noneMatch(q -> q.getQuestion().getId().equals(question.getId()))
-                || askedCloseQuestions.stream().anyMatch(q -> q.getQuestion().getId().equals(question.getId()))
-            )
+                question -> (
+                        closedQuestions.stream().noneMatch(q -> q.getQuestion() != null && q.getQuestion().getId().equals(question.getId()))
+                                || askedCloseQuestions.stream().anyMatch(q -> q.getQuestion() != null && q.getQuestion().getId().equals(question.getId()))
+                )
         );
         return questions;
     }
